@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(examples)
@@ -61,19 +61,19 @@ set(LIBBPF_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/libbpf/libbpf.a)
 find_package(BpfObject REQUIRED)
 
 # Create an executable for each application
-file(GLOB apps *.bpf.c)
-file(GLOB bpf_src *.bpf.c)
+set(traces "trace_gotls")
 
-foreach(app ${apps})
+foreach(trace ${traces})
+  file(GLOB app ${trace}/*.bpf.c)
+  file(GLOB bpf_src ${trace}/*.bpf.c)
   get_filename_component(app_stem ${app} NAME_WE)
-
   # Build object skeleton and depend skeleton on libbpf build
-  bpf_object(${app_stem} ${app_stem}.bpf.c)
+  bpf_object(${app_stem} ${trace}/${app_stem}.bpf.c)
   add_dependencies(${app_stem}_skel libbpf-build bpftool-build)
 
   # build userspace 
-  file(GLOB apps_srcs *.c)
+  file(GLOB apps_srcs ${trace}/*.cpp)
   list(REMOVE_ITEM apps_srcs ${bpf_src})
-  add_executable(${app_stem} ${apps_srcs})
-  target_link_libraries(${app_stem} ${app_stem}_skel)
+  add_executable(${trace} ${apps_srcs})
+  target_link_libraries(${trace} ${app_stem}_skel)
 endforeach()
