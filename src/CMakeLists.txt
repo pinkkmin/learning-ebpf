@@ -3,14 +3,15 @@
 cmake_minimum_required(VERSION 3.16)
 project(examples)
 
+set(Thirdparty ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/)
 # Tell cmake where to find BpfObject module
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../tools/cmake)
+list(APPEND CMAKE_MODULE_PATH ${Thirdparty}/tools/cmake)
 
 # Build vendored libbpf
 include(ExternalProject)
 ExternalProject_Add(libbpf
   PREFIX libbpf
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libbpf/src
+  SOURCE_DIR ${Thirdparty}/libbpf/src
   CONFIGURE_COMMAND ""
   BUILD_COMMAND make
     BUILD_STATIC_ONLY=1
@@ -27,7 +28,7 @@ ExternalProject_Add(libbpf
 
 ExternalProject_Add(bpftool
   PREFIX bpftool
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bpftool/src
+  SOURCE_DIR ${Thirdparty}/bpftool/src
   CONFIGURE_COMMAND ""
   BUILD_COMMAND make bootstrap
     OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/bpftool/
@@ -55,18 +56,18 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "loongarch64")
 endif()
 
 set(BPFOBJECT_BPFTOOL_EXE ${CMAKE_CURRENT_BINARY_DIR}/bpftool/bootstrap/bpftool)
-set(BPFOBJECT_VMLINUX_H ${CMAKE_CURRENT_SOURCE_DIR}/../vmlinux/${ARCH}/vmlinux.h)
+set(BPFOBJECT_VMLINUX_H ${Thirdparty}/vmlinux/${ARCH}/vmlinux.h)
 set(LIBBPF_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/libbpf)
 set(LIBBPF_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/libbpf/libbpf.a)
 find_package(BpfObject REQUIRED)
 
 # Create an executable for each application
-set(traces "trace_gotls")
+set(traces "trace_gotls"
+            "trace_libressl")
 
 foreach(trace ${traces})
-  file(GLOB app ${trace}/*.bpf.c)
   file(GLOB bpf_src ${trace}/*.bpf.c)
-  get_filename_component(app_stem ${app} NAME_WE)
+  get_filename_component(app_stem ${bpf_src} NAME_WE)
   # Build object skeleton and depend skeleton on libbpf build
   bpf_object(${app_stem} ${trace}/${app_stem}.bpf.c)
   add_dependencies(${app_stem}_skel libbpf-build bpftool-build)

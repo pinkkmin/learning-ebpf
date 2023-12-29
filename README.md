@@ -2,10 +2,11 @@
 learning-ebpf
 ## TODO
 - trace
+- trace gotls
+- trace libressl/libretls
 - trace openssl
 - trace gnutls
-- trace gotls
-- trace libressl
+- trace rustls
 ## src
 .c : kern space source codes
 

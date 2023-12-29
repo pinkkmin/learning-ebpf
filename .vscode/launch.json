@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/ohh/dev/learning-ebpf/src/trace_gotls",
-      "program": "/home/ohh/dev/learning-ebpf/src/trace_gotls/build/Debug/outDebug",
+      "cwd": "/home/ohh/dev/learning-ebpf/src/trace_libressl",
+      "program": "/home/ohh/dev/learning-ebpf/src/trace_libressl/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
