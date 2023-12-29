@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.16)
 project(examples)
 
 set(Thirdparty ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/)
+
+add_subdirectory(${Thirdparty}/gflags gflags_binary_dir)
+
 # Tell cmake where to find BpfObject module
 list(APPEND CMAKE_MODULE_PATH ${Thirdparty}/tools/cmake)
 
@@ -77,4 +80,5 @@ foreach(trace ${traces})
   list(REMOVE_ITEM apps_srcs ${bpf_src})
   add_executable(${trace} ${apps_srcs})
   target_link_libraries(${trace} ${app_stem}_skel)
+  target_link_libraries(${trace} gflags::gflags)
 endforeach()
