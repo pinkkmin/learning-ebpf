@@ -42,12 +42,19 @@ bool attach_go_tls_entry_read(const char* binary) {
         return false;
     }    
 
-    goabi_opts.retprobe = true;
     obj->links.probe_exit_foo =
         bpf_program__attach_uprobe_opts(obj->progs.probe_exit_foo, 
                                 -1,
                                 binary,
-                                0,
+                                0xea,
+                                &goabi_opts
+        );
+
+    obj->links.probe_exit_foo =
+        bpf_program__attach_uprobe_opts(obj->progs.probe_exit_foo, 
+                                -1,
+                                binary,
+                                0x22f,
                                 &goabi_opts
         );
 

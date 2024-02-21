@@ -66,7 +66,8 @@ find_package(BpfObject REQUIRED)
 
 # Create an executable for each application
 set(traces "trace_gotls"
-            "trace_libressl")
+            "trace_libressl"
+            "go-abi")
 
 foreach(trace ${traces})
   file(GLOB bpf_src ${trace}/*.bpf.c)

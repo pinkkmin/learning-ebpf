@@ -6,7 +6,7 @@
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
 // func foo(a1, a2, a3 int64, bbbb []byte) (int64, []byte)
-SEC("uprobe/foo")
+SEC("uprobe/foo_entry")
 int probe_entry_foo(struct pt_regs *ctx) {
 	uint64_t a1 = (uint64_t)(ctx->ax);
 	uint64_t a2 = (uint64_t)(ctx->bx);
@@ -17,7 +17,7 @@ int probe_entry_foo(struct pt_regs *ctx) {
 		a1, a2, a3, b_data);
 }
 
-SEC("uretprobe/foo")
+SEC("uprobe/foo_exit")
 int probe_exit_foo(struct pt_regs *ctx) {
 	uint64_t ret0 = (uint64_t)(ctx->ax);
 	uint64_t ret1 = (uint64_t)(ctx->bx);
